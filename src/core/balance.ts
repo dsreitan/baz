@@ -252,3 +252,32 @@ export const BATTLE_ESSENCE_RANGE: [number, number] = [3, 8];
 export const ALPHA_ESSENCE_RANGE: [number, number] = [10, 20];
 export const CACHE_ESSENCE_RANGE: [number, number] = [8, 15];
 export const APEX_ESSENCE_RANGE: [number, number] = [30, 50];
+
+// ---------------------------------------------------------------------------
+// Phase 6 additions — reserve size, inventory cap, grove healing, defeat
+// loot retention, packmaster battle-xp share, skill respec cost. Additive
+// only (ground rule: "balance.ts additive constants"); consumed by the new
+// `src/core/run.ts` expedition-runner reducer and the UI screens.
+// ---------------------------------------------------------------------------
+
+/** Reserve holds this many dinos before any Handler `reserveSize` skill bonus (DESIGN §6). */
+export const RESERVE_SIZE_BASE = 6;
+
+/** Inventory grid hard cap; loot beyond this overflows into a salvage prompt (Phase 6 brief). */
+export const INVENTORY_CAP = 60;
+
+/** Grove heal-team percent before any Survivalist `groveHealBonus` skill (DESIGN §7). */
+export const GROVE_HEAL_BASE_PERCENT = 50;
+
+/**
+ * Loot/essence percent kept when an expedition ends in defeat, before any
+ * `defeatLootKeep` skill bonus (DESIGN §3: "keep... half the loot found so
+ * far").
+ */
+export const DEFEAT_LOOT_KEEP_BASE_PERCENT = 50;
+
+/** Packmaster XP earned per battle, as a percent of the dino XP pool (DESIGN §6: XP "earned alongside the pack"). */
+export const MASTER_XP_SHARE_OF_BATTLE_PERCENT = 50;
+
+/** Essence cost to respec the entire skill tree (DESIGN §6: "Respec at Camp for essence"). */
+export const SKILL_RESPEC_ESSENCE_COST = 60;

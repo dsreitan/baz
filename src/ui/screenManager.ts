@@ -19,13 +19,33 @@ export interface Screen {
 export type ScreenFactory<Props = void> = (props: Props) => Screen;
 
 /**
+ * A mutable box holding the currently-active save slot index. It's a box
+ * (not a plain number) so `main.ts`'s `save()` closure and every screen's
+ * `ctx.activeSlot` see the same live value after MainMenu's New Game/Load
+ * flow picks a slot — reassigning `ctx.state` would break the "same object
+ * reference" trick `GameContext.state` relies on (see `main.ts`'s module
+ * doc), so slot selection gets the same treatment.
+ */
+export interface ActiveSlotRef {
+  value: number;
+}
+
+/**
  * Passed to every screen on mount. `goto` pushes a new screen (the common
  * case for forward navigation); `back` pops to the previous screen.
+ *
+ * `state` is one long-lived `GameState` object for the whole session —
+ * screens mutate its fields/nested arrays in place (never reassign `ctx.state`
+ * itself) so that `main.ts`'s `save()` closure, which captured the same
+ * object reference at boot, always persists the current game.
  */
 export interface GameContext {
   state: GameState;
+  activeSlot: ActiveSlotRef;
   save(): void;
   goto<Props = void>(factory: ScreenFactory<Props>, props?: Props): void;
+  /** Swaps the top screen in place (same stack depth) — the hub-and-spoke navigation (Camp <-> Pack/Gear/Skills/ExpeditionMap, node resolution) uses this exclusively so every screen mount re-reads the current `state` instead of reviving a screen that rendered a now-stale snapshot. */
+  replace<Props = void>(factory: ScreenFactory<Props>, props?: Props): void;
   back(): void;
 }
 
@@ -39,12 +59,14 @@ export class ScreenManager {
   private readonly stack: StackEntry[] = [];
   private readonly ctx: GameContext;
 
-  constructor(container: HTMLElement, state: GameState, save: () => void) {
+  constructor(container: HTMLElement, state: GameState, activeSlot: ActiveSlotRef, save: () => void) {
     this.container = container;
     this.ctx = {
       state,
+      activeSlot,
       save,
       goto: (factory, props) => this.push(factory, props as never),
+      replace: (factory, props) => this.replace(factory, props as never),
       back: () => this.pop(),
     };
   }

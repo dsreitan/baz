@@ -1,0 +1,785 @@
+/**
+ * Phase 6 — MainMenu, Camp, Pack, Gear, SkillTree, ExpeditionMap, Event,
+ * Reward screens. Reuses the design tokens from main.css (must be imported
+ * after main.css's :root block, so this file assumes those vars exist).
+ */
+
+/* -----------------------------------------------------------------------
+ * Shared layout helpers
+ * --------------------------------------------------------------------- */
+
+.pack-screen-header,
+.map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.camp-panel-title {
+  margin: 0 0 var(--space-3);
+  color: var(--color-accent);
+}
+
+.camp-panel-subtitle {
+  margin: var(--space-3) 0 var(--space-2);
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.pack-section-title {
+  margin: var(--space-5) 0 var(--space-3);
+  color: var(--color-accent);
+}
+
+/* -----------------------------------------------------------------------
+ * MainMenu
+ * --------------------------------------------------------------------- */
+
+.main-menu {
+  align-items: stretch;
+  min-height: auto;
+  padding: var(--space-5) 0;
+}
+
+.menu-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+  width: 100%;
+  margin-top: var(--space-4);
+  text-align: left;
+}
+
+.menu-slot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.menu-slot-empty {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 160px;
+}
+
+.menu-slot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.menu-slot-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.menu-slot-badge {
+  background: var(--color-danger);
+  color: var(--color-text);
+  border-radius: var(--radius-pill);
+  padding: 2px var(--space-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.menu-slot-meta,
+.menu-slot-saved-at {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.menu-slot-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: var(--space-2);
+}
+
+.menu-import-btn {
+  align-self: center;
+  margin-top: var(--space-4);
+}
+
+.menu-export-textarea,
+.menu-name-input {
+  width: 100%;
+  font-family: monospace;
+  background: var(--color-stone-dark);
+  color: var(--color-text);
+  border: 2px solid var(--outline-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.menu-name-input {
+  font-family: var(--font-family);
+}
+
+.menu-name-label {
+  display: block;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.menu-import-slot-picker {
+  display: flex;
+  gap: var(--space-2);
+  margin: var(--space-2) 0;
+}
+
+.menu-new-game {
+  min-width: min(600px, 80vw);
+}
+
+.menu-starter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.menu-starter-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.menu-starter-flavor {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.menu-starter-moves {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+/* -----------------------------------------------------------------------
+ * Camp
+ * --------------------------------------------------------------------- */
+
+.camp-screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.camp-hub-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-5);
+}
+
+@media (max-width: 800px) {
+  .camp-hub-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.camp-pack-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.camp-reserve-note {
+  color: var(--color-text-muted);
+  margin: var(--space-2) 0;
+}
+
+.camp-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.camp-master-level {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.camp-xp-track {
+  background: var(--color-stone-dark);
+  border: 2px solid var(--outline-color);
+  border-radius: var(--radius-pill);
+  height: 14px;
+  overflow: hidden;
+  margin: var(--space-2) 0 var(--space-1);
+}
+
+.camp-xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+}
+
+.camp-xp-label {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.camp-essence-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.camp-essence-icon {
+  display: inline-flex;
+}
+
+.camp-biome-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-3);
+}
+
+.camp-biome-card {
+  background: var(--color-stone-dark);
+  border: 3px solid var(--outline-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  transition: transform 0.08s ease;
+}
+
+.camp-biome-card:hover {
+  transform: translateY(-2px);
+}
+
+.camp-biome-card-selected {
+  box-shadow: 0 0 0 3px var(--color-accent);
+}
+
+.camp-biome-swatch {
+  height: 36px;
+  border-radius: var(--radius-md);
+}
+
+.camp-biome-name {
+  font-weight: 700;
+}
+
+.camp-biome-aspects,
+.camp-biome-species {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.camp-biome-thumb {
+  display: inline-flex;
+}
+
+.camp-biome-badge {
+  font-size: 0.75rem;
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.camp-tier-row {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.camp-start-btn {
+  margin-top: var(--space-4);
+  width: 100%;
+}
+
+/* -----------------------------------------------------------------------
+ * Pack screen
+ * --------------------------------------------------------------------- */
+
+.pack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+.pack-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pack-tile-trait {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.pack-tile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: auto;
+}
+
+.pack-xp-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pack-xp-track {
+  background: var(--color-stone-dark);
+  border: 2px solid var(--outline-color);
+  border-radius: var(--radius-pill);
+  height: 10px;
+  overflow: hidden;
+}
+
+.pack-xp-fill {
+  height: 100%;
+  background: var(--color-accent);
+}
+
+.pack-xp-label {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.pack-moves-modal {
+  min-width: min(420px, 80vw);
+}
+
+.pack-moves-equipped,
+.pack-moves-available {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.pack-move-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: var(--color-stone-dark);
+  border: 2px solid var(--outline-color);
+  border-radius: var(--radius-pill);
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.85rem;
+}
+
+.pack-move-chip-equipped {
+  border-color: var(--color-accent);
+}
+
+.pack-move-remove {
+  background: none;
+  border: none;
+  color: var(--color-danger);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 0 0 var(--space-1);
+  box-shadow: none;
+}
+
+.pack-moves-hint {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+/* -----------------------------------------------------------------------
+ * Gear screen
+ * --------------------------------------------------------------------- */
+
+.gear-panel {
+  margin-bottom: var(--space-4);
+}
+
+.gear-slot-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+}
+
+.gear-slot-box {
+  background: var(--color-stone-dark);
+  border: 2px dashed var(--outline-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.gear-slot-empty {
+  color: var(--color-text-muted);
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.gear-slot-label {
+  text-transform: capitalize;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.gear-slot-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.gear-inventory-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.gear-inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.gear-inventory-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.gear-equip-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+/* -----------------------------------------------------------------------
+ * Skill tree
+ * --------------------------------------------------------------------- */
+
+.skill-commands-row {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.skill-respec-btn {
+  margin-bottom: var(--space-4);
+}
+
+.skill-branches {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 800px) {
+  .skill-branches {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skill-branch-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.skill-node {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+}
+
+.skill-node-owned {
+  border-color: var(--color-accent);
+}
+
+.skill-node-locked {
+  opacity: 0.55;
+}
+
+.skill-node-tier {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.skill-node-name {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.skill-node-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.skill-node-status {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.skill-node-btn {
+  align-self: flex-start;
+  margin-top: var(--space-1);
+}
+
+/* -----------------------------------------------------------------------
+ * Expedition map
+ * --------------------------------------------------------------------- */
+
+.map-scroll {
+  overflow-x: auto;
+  padding-bottom: var(--space-3);
+}
+
+.map-container {
+  position: relative;
+  border-radius: var(--radius-lg);
+  border: var(--outline-width) solid var(--outline-color);
+}
+
+.map-edges {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.map-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 76px;
+  padding: var(--space-2);
+  background: var(--color-stone-dark);
+  border: 3px solid var(--outline-color);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.65rem;
+  text-align: center;
+}
+
+.map-node-available {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 12px rgba(224, 169, 74, 0.6);
+  cursor: pointer;
+}
+
+.map-node-current {
+  border-color: var(--color-accent-hover);
+  box-shadow: 0 0 0 3px var(--color-accent-hover);
+}
+
+.map-node-visited {
+  opacity: 0.6;
+}
+
+.map-node-locked {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.map-node[disabled] {
+  cursor: not-allowed;
+}
+
+.map-node-apex {
+  width: 90px;
+}
+
+.map-node-label {
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.map-header-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.adjust-pack-modal {
+  min-width: min(420px, 80vw);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* -----------------------------------------------------------------------
+ * Event screen
+ * --------------------------------------------------------------------- */
+
+.event-screen {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.event-title {
+  color: var(--color-accent);
+  margin-top: 0;
+}
+
+.event-text {
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.event-choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+}
+
+.event-choice-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+}
+
+.event-choice-label {
+  font-weight: 700;
+}
+
+.event-choice-hint {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.event-resolution {
+  border-top: 2px solid var(--outline-color);
+  padding-top: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+/* -----------------------------------------------------------------------
+ * Reward screen
+ * --------------------------------------------------------------------- */
+
+.reward-screen {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.reward-title {
+  color: var(--color-accent);
+  margin: 0;
+}
+
+.reward-subtitle {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.reward-essence-line {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.reward-loot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.reward-xp-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.reward-xp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  border-bottom: 1px solid var(--color-stone);
+  padding-bottom: var(--space-1);
+}
+
+.reward-xp-name {
+  font-weight: 700;
+  min-width: 100px;
+}
+
+.reward-xp-levelup {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.reward-maturation {
+  color: var(--rarity-epic);
+  font-weight: 700;
+}
+
+.reward-new-move {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.reward-master-levelup {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.reward-tame-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.reward-tame-choices {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.reward-continue-btn {
+  align-self: flex-end;
+  margin-top: var(--space-3);
+}
+
+/* -----------------------------------------------------------------------
+ * Reserve picker (shared with battleScreen; new rows for adjust-pack)
+ * --------------------------------------------------------------------- */
+
+.reserve-picker-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-stone);
+}

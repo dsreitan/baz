@@ -53,8 +53,13 @@ function requireSpecies(id: SpeciesId): SpeciesDef {
   return def;
 }
 
-/** Species learnset moves unlocked by `level`, capped to the last 4 (active slot limit). */
-function movesAtLevel(species: SpeciesDef, level: number): MoveId[] {
+/**
+ * Species learnset moves unlocked by `level`, capped to the last 4 (active
+ * slot limit). Exported (additive Phase 6 change — see Phase 5 report's
+ * friction note) so UI/demo code building dinos at a specific level doesn't
+ * have to duplicate this logic.
+ */
+export function movesAtLevel(species: SpeciesDef, level: number): MoveId[] {
   const learned = species.learnset.filter((entry) => entry.level <= level).map((entry) => entry.move);
   return learned.slice(-4);
 }

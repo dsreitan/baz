@@ -62,7 +62,7 @@ import {
 } from './effects';
 import { bondEffectsForPack, computeBonds, deriveStats, stageForLevel } from '../stats';
 import type { PackMember, SideBondEffects } from '../stats';
-import { resolveTame, type TameContext } from './taming';
+import { resolveTame, tameChance, type TameContext } from './taming';
 import type {
   AlphaModId,
   BattleAction,
@@ -557,6 +557,26 @@ export function legalActions(state: BattleState): BattleAction[] {
 
 export function isBattleOver(state: BattleState): boolean {
   return state.outcome !== undefined;
+}
+
+/**
+ * Public tame-chance helper (additive Phase 6 export — closes the Phase 5
+ * report's friction note). Computes the *real* chance a `{type:'tame'}`
+ * action would roll right now against the current lowest-HP tameable enemy,
+ * including Handler skill and satchel-affix bonuses that otherwise only
+ * live in the private `BattleRuntime`. Returns 0 if there is no eligible
+ * tame target this instant (see `findLowestHpTameableEnemy`).
+ */
+export function computeTameChance(state: BattleState): number {
+  const runtime = getRuntime(state);
+  const target = findLowestHpTameableEnemy(state);
+  if (!target) return 0;
+  const ctx: TameContext = {
+    lureActive: state.lureActive,
+    skillTameChancePercent: runtime.skillTameChancePercent,
+    affixTameChancePercent: runtime.masterGear.tameChancePercent,
+  };
+  return tameChance(target, ctx);
 }
 
 function requireCombatant(state: BattleState, uid: Uid): Combatant {

@@ -109,7 +109,12 @@ export function modal(options: ModalOptions): ModalHandle {
 
   const overlay = el('div', { className: 'modal-overlay' }, box);
 
+  function onKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') close();
+  }
+
   function close(): void {
+    document.removeEventListener('keydown', onKeydown);
     overlay.remove();
     options.onClose?.();
   }
@@ -117,6 +122,7 @@ export function modal(options: ModalOptions): ModalHandle {
   overlay.addEventListener('click', (event) => {
     if (event.target === overlay) close();
   });
+  document.addEventListener('keydown', onKeydown);
 
   document.body.appendChild(overlay);
   return { close };

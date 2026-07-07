@@ -9,6 +9,9 @@
  * battle screen, dev gallery route. Must precede all other rules (CSS
  * requires @import statements first). */
 @import 'battle.css';
+/* Phase 6 — MainMenu, Camp, Pack, Gear, SkillTree, ExpeditionMap, Event,
+ * Reward screens. */
+@import 'screens.css';
 
 :root {
   /* ---------------------------------------------------------------------
@@ -196,6 +199,19 @@ button {
 
 .btn-primary:hover {
   background: linear-gradient(180deg, #ffd889 0%, var(--color-accent-hover) 100%);
+}
+
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.4);
+}
+
+.btn:disabled:active,
+.btn[disabled]:active {
+  transform: none;
+  box-shadow: var(--shadow-button);
 }
 
 /* -----------------------------------------------------------------------
