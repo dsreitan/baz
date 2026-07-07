@@ -1,0 +1,311 @@
+/**
+ * CLAWBOUND design tokens & base styles.
+ * Theme: dark parchment + carved stone (DESIGN.md §8 "Warcraft 3
+ * Saturday-morning"). Chunky rounded panels/buttons, big readable
+ * numbers, thick dark outlines (not pure black).
+ */
+
+:root {
+  /* ---------------------------------------------------------------------
+   * Aspect palettes (DESIGN.md §4.1 palette anchors). Each aspect gets a
+   * base / shade (darker, for shadows & borders) / accent (lighter, for
+   * highlights & glow) triad.
+   * ------------------------------------------------------------------- */
+  --aspect-ember-base: #d9481f;
+  --aspect-ember-shade: #7a2410;
+  --aspect-ember-accent: #ff9142;
+
+  --aspect-frost-base: #a9d6e5;
+  --aspect-frost-shade: #4d7a8c;
+  --aspect-frost-accent: #eaf6fb;
+
+  --aspect-verdant-base: #4a9c3e;
+  --aspect-verdant-shade: #245c1d;
+  --aspect-verdant-accent: #9be05f;
+
+  --aspect-stone-base: #8a7460;
+  --aspect-stone-shade: #4a3c30;
+  --aspect-stone-accent: #cbb896;
+
+  --aspect-storm-base: #e0c93f;
+  --aspect-storm-shade: #6b4fa0;
+  --aspect-storm-accent: #f5e97a;
+
+  --aspect-tide-base: #2f7d9c;
+  --aspect-tide-shade: #164a5c;
+  --aspect-tide-accent: #6fd6d6;
+
+  --aspect-venom-base: #7a3f9c;
+  --aspect-venom-shade: #4a2361;
+  --aspect-venom-accent: #a8d95c;
+
+  --aspect-rune-base: #b23f8f;
+  --aspect-rune-shade: #5c1f4a;
+  --aspect-rune-accent: #f0c34a;
+
+  /* ---------------------------------------------------------------------
+   * Rarity colors
+   * ------------------------------------------------------------------- */
+  --rarity-common: #9a9a9a;
+  --rarity-uncommon: #3fae4a;
+  --rarity-rare: #3f8fd6;
+  --rarity-epic: #9a4fd6;
+  --rarity-legendary: #e08a2f;
+
+  /* ---------------------------------------------------------------------
+   * Spacing scale
+   * ------------------------------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* ---------------------------------------------------------------------
+   * Theme surface & text colors
+   * ------------------------------------------------------------------- */
+  --outline-color: #2a1a33; /* thick dark outline, DESIGN §8 — not pure black */
+  --outline-width: 4px;
+
+  --color-parchment: #2b2118;
+  --color-parchment-dark: #1c1712;
+  --color-stone: #3a342c;
+  --color-stone-dark: #221e19;
+  --color-stone-light: #504839;
+
+  --color-text: #f1e6d2;
+  --color-text-muted: #b8a988;
+  --color-accent: #e0a94a;
+  --color-accent-hover: #f2c168;
+  --color-danger: #c0432f;
+
+  --radius-md: 10px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
+
+  --shadow-panel: 0 4px 0 var(--outline-color), 0 8px 16px rgba(0, 0, 0, 0.45);
+  --shadow-button: 0 3px 0 var(--outline-color);
+
+  --font-family: ui-rounded, 'SF Pro Rounded', 'Segoe UI Rounded', system-ui, -apple-system,
+    'Segoe UI', Roboto, sans-serif;
+
+  --viewport-max-width: 1100px;
+}
+
+/* -----------------------------------------------------------------------
+ * Reset & base layout
+ * --------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  color: var(--color-text);
+  background: radial-gradient(ellipse at top, var(--color-stone) 0%, var(--color-parchment-dark) 70%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+}
+
+#app {
+  max-width: var(--viewport-max-width);
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  padding: var(--space-5);
+}
+
+.screen {
+  width: 100%;
+}
+
+/* -----------------------------------------------------------------------
+ * Panels — dark parchment / carved-stone
+ * --------------------------------------------------------------------- */
+
+.panel {
+  background: linear-gradient(180deg, var(--color-parchment) 0%, var(--color-parchment-dark) 100%);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+  padding: var(--space-5);
+}
+
+.panel-stone {
+  background: linear-gradient(180deg, var(--color-stone-light) 0%, var(--color-stone-dark) 100%);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+  padding: var(--space-5);
+}
+
+/* -----------------------------------------------------------------------
+ * Buttons — chunky, rounded, tactile
+ * --------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  background: var(--color-stone-light);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-pill);
+  padding: var(--space-3) var(--space-5);
+  box-shadow: var(--shadow-button);
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--color-stone);
+}
+
+.btn:active {
+  transform: translateY(3px);
+  box-shadow: none;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, var(--color-accent-hover) 0%, var(--color-accent) 100%);
+  color: var(--color-parchment-dark);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(180deg, #ffd889 0%, var(--color-accent-hover) 100%);
+}
+
+/* -----------------------------------------------------------------------
+ * Main menu (Phase 1 placeholder)
+ * --------------------------------------------------------------------- */
+
+.main-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: 60vh;
+  text-align: center;
+}
+
+.main-menu-title {
+  font-size: 3rem;
+  margin: 0;
+  color: var(--color-accent);
+  text-shadow: 0 3px 0 var(--outline-color);
+  letter-spacing: 0.04em;
+}
+
+.main-menu-subtitle {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+/* -----------------------------------------------------------------------
+ * Modal
+ * --------------------------------------------------------------------- */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 6, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--space-5);
+}
+
+.modal {
+  background: linear-gradient(180deg, var(--color-parchment) 0%, var(--color-parchment-dark) 100%);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+  padding: var(--space-5);
+  max-width: 480px;
+  width: 100%;
+}
+
+.modal-title {
+  margin: 0 0 var(--space-3);
+  color: var(--color-accent);
+}
+
+.modal-content {
+  margin-bottom: var(--space-4);
+  color: var(--color-text);
+}
+
+.modal-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+}
+
+/* -----------------------------------------------------------------------
+ * Toast
+ * --------------------------------------------------------------------- */
+
+.toast-container {
+  position: fixed;
+  bottom: var(--space-5);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  z-index: 200;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--color-stone-dark);
+  border: 2px solid var(--outline-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* -----------------------------------------------------------------------
+ * Tooltip
+ * --------------------------------------------------------------------- */
+
+.tooltip {
+  position: fixed;
+  background: var(--color-stone-dark);
+  border: 2px solid var(--outline-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  max-width: 260px;
+  z-index: 300;
+  pointer-events: none;
+}
