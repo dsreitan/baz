@@ -5,6 +5,11 @@
  * numbers, thick dark outlines (not pure black).
  */
 
+/* Phase 5 — dino cards, health bars, item cards, battle log, command bar,
+ * battle screen, dev gallery route. Must precede all other rules (CSS
+ * requires @import statements first). */
+@import 'battle.css';
+
 :root {
   /* ---------------------------------------------------------------------
    * Aspect palettes (DESIGN.md §4.1 palette anchors). Each aspect gets a

@@ -1,0 +1,756 @@
+/**
+ * Battle screen, dino cards, and dev gallery styling (Phase 5).
+ * Imported once from main.css (`@import` at the end, per that file's
+ * header) so every other screen keeps working unmodified.
+ */
+
+/* -----------------------------------------------------------------------
+ * Dino card (compact battle-row tile / full reserve-picker style)
+ * --------------------------------------------------------------------- */
+
+.dino-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  background: linear-gradient(180deg, var(--color-stone-light) 0%, var(--color-stone-dark) 100%);
+  border: 3px solid var(--outline-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  width: 132px;
+  overflow: visible;
+  transition: box-shadow 0.15s ease, transform 0.15s ease, filter 0.4s ease;
+}
+
+.dino-card-full {
+  width: 180px;
+}
+
+.dino-card-portrait {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.dino-card-portrait svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.dino-card-name-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-weight: 700;
+}
+
+.dino-card-name {
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+.dino-card-level {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+
+.dino-card-badges {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dino-card-badge svg {
+  display: block;
+}
+
+.dino-card-trait-badge {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-stone-light);
+  border-radius: var(--radius-pill);
+  padding: 1px 6px;
+}
+
+.dino-card-selected {
+  box-shadow: 0 0 0 3px var(--color-accent);
+}
+
+.dino-card-targetable {
+  cursor: crosshair;
+  box-shadow: 0 0 0 3px var(--color-danger), 0 0 14px 2px var(--color-danger);
+  transform: translateY(-2px);
+}
+
+.dino-card-fainted,
+.dino-fainted {
+  filter: grayscale(1) brightness(0.6);
+}
+
+/* -----------------------------------------------------------------------
+ * Health bar
+ * --------------------------------------------------------------------- */
+
+.health-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.health-bar-track {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background: var(--color-stone-dark);
+  border: 2px solid var(--outline-color);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.health-bar-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  background: linear-gradient(180deg, #6fce5a 0%, #3b8f2c 100%);
+  transition: width 0.4s ease;
+}
+
+.health-bar-fill-low {
+  background: linear-gradient(180deg, #e0664a 0%, #a12c2c 100%);
+}
+
+.health-bar-shield {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  background: rgba(111, 214, 214, 0.65);
+  border-left: 2px solid var(--outline-color);
+}
+
+.health-bar-numbers {
+  font-size: 0.62rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.status-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  justify-content: center;
+  min-height: 18px;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--color-stone-dark);
+  border: 1px solid var(--outline-color);
+  border-radius: var(--radius-pill);
+  padding: 0 4px;
+  animation: status-pop 0.25s ease;
+}
+
+.status-chip-icon svg {
+  display: block;
+}
+
+.status-chip-turns {
+  font-size: 0.6rem;
+  color: var(--color-text);
+}
+
+@keyframes status-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* -----------------------------------------------------------------------
+ * Item card
+ * --------------------------------------------------------------------- */
+
+.item-card {
+  border-radius: var(--radius-md);
+  border: 3px solid var(--rarity-common);
+  background: linear-gradient(180deg, var(--color-parchment) 0%, var(--color-parchment-dark) 100%);
+  padding: var(--space-3);
+}
+
+.item-card-rarity-common {
+  border-color: var(--rarity-common);
+}
+.item-card-rarity-uncommon {
+  border-color: var(--rarity-uncommon);
+}
+.item-card-rarity-rare {
+  border-color: var(--rarity-rare);
+}
+.item-card-rarity-epic {
+  border-color: var(--rarity-epic);
+}
+.item-card-rarity-legendary {
+  border-color: var(--rarity-legendary);
+  box-shadow: 0 0 12px 1px rgba(224, 138, 47, 0.5);
+}
+
+.item-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.item-card-name {
+  font-weight: 700;
+}
+
+.item-card-name-common {
+  color: var(--rarity-common);
+}
+.item-card-name-uncommon {
+  color: var(--rarity-uncommon);
+}
+.item-card-name-rare {
+  color: var(--rarity-rare);
+}
+.item-card-name-epic {
+  color: var(--rarity-epic);
+}
+.item-card-name-legendary {
+  color: var(--rarity-legendary);
+}
+
+.item-card-meta {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+}
+
+.item-card-affixes {
+  margin: var(--space-2) 0 0;
+  padding-left: 1.1em;
+  font-size: 0.8rem;
+}
+
+.item-card-legendary {
+  margin-top: var(--space-2);
+  font-size: 0.8rem;
+  color: var(--rarity-legendary);
+}
+
+/* -----------------------------------------------------------------------
+ * Battle log
+ * --------------------------------------------------------------------- */
+
+.battle-log {
+  height: 100%;
+  min-height: 260px;
+  max-height: 520px;
+  overflow-y: auto;
+  background: var(--color-stone-dark);
+  border: 3px solid var(--outline-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.78rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.battle-log-line {
+  color: var(--color-text);
+}
+
+.battle-log-roundStart {
+  color: var(--color-accent);
+  font-weight: 700;
+  margin-top: var(--space-2);
+}
+
+.battle-log-battleEnd {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.battle-log-faint {
+  color: var(--color-danger);
+}
+
+/* -----------------------------------------------------------------------
+ * Command bar
+ * --------------------------------------------------------------------- */
+
+.command-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.command-bar-btn {
+  font-size: 0.8rem;
+  padding: var(--space-2) var(--space-3);
+}
+
+/* -----------------------------------------------------------------------
+ * Battle screen layout
+ * --------------------------------------------------------------------- */
+
+.battle-screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.battle-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.battle-bonds {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.bond-chip {
+  background: var(--color-stone);
+  border: 2px solid var(--outline-color);
+  border-radius: var(--radius-pill);
+  padding: 2px 10px;
+  font-size: 0.75rem;
+}
+
+.battle-round {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.battle-main {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.battle-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+  border: 3px solid var(--outline-color);
+  border-radius: var(--radius-lg);
+  position: relative;
+}
+
+.battle-row {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.battle-center-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+}
+
+.battle-side-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.battle-footer {
+  min-height: 140px;
+}
+
+.action-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--color-stone);
+  border: 3px solid var(--outline-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.action-panel-title {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.action-moves {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.action-buttons {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.move-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 110px;
+}
+
+.move-btn-cooldown {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+}
+
+.move-btn-aspect-ember {
+  border-color: var(--aspect-ember-shade);
+  background: linear-gradient(180deg, var(--aspect-ember-base) 0%, var(--aspect-ember-shade) 100%);
+}
+.move-btn-aspect-frost {
+  border-color: var(--aspect-frost-shade);
+  background: linear-gradient(180deg, var(--aspect-frost-base) 0%, var(--aspect-frost-shade) 100%);
+  color: var(--color-parchment-dark);
+}
+.move-btn-aspect-verdant {
+  border-color: var(--aspect-verdant-shade);
+  background: linear-gradient(180deg, var(--aspect-verdant-base) 0%, var(--aspect-verdant-shade) 100%);
+}
+.move-btn-aspect-stone {
+  border-color: var(--aspect-stone-shade);
+  background: linear-gradient(180deg, var(--aspect-stone-base) 0%, var(--aspect-stone-shade) 100%);
+}
+.move-btn-aspect-storm {
+  border-color: var(--aspect-storm-shade);
+  background: linear-gradient(180deg, var(--aspect-storm-base) 0%, var(--aspect-storm-shade) 100%);
+}
+.move-btn-aspect-tide {
+  border-color: var(--aspect-tide-shade);
+  background: linear-gradient(180deg, var(--aspect-tide-base) 0%, var(--aspect-tide-shade) 100%);
+}
+.move-btn-aspect-venom {
+  border-color: var(--aspect-venom-shade);
+  background: linear-gradient(180deg, var(--aspect-venom-base) 0%, var(--aspect-venom-shade) 100%);
+}
+.move-btn-aspect-rune {
+  border-color: var(--aspect-rune-shade);
+  background: linear-gradient(180deg, var(--aspect-rune-base) 0%, var(--aspect-rune-shade) 100%);
+}
+
+.action-btn-tame {
+  background: linear-gradient(180deg, var(--color-accent-hover) 0%, var(--color-accent) 100%);
+  color: var(--color-parchment-dark);
+}
+
+/* -----------------------------------------------------------------------
+ * Round banner
+ * --------------------------------------------------------------------- */
+
+.round-banner {
+  position: absolute;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  text-shadow: 0 3px 0 var(--outline-color);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.round-banner-show {
+  animation: round-banner-pop 0.9s ease;
+}
+
+@keyframes round-banner-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  35% {
+    transform: scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* -----------------------------------------------------------------------
+ * Battle animations (event-driven presentation)
+ * --------------------------------------------------------------------- */
+
+.anim-lunge {
+  animation: lunge 0.4s ease;
+}
+
+.battle-row-enemy .anim-lunge {
+  animation-name: lunge-left;
+}
+
+@keyframes lunge {
+  0% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(-10px) scale(1.04);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes lunge-left {
+  0% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(10px) scale(1.04);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.anim-shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+.anim-guard {
+  animation: guard-flash 0.4s ease;
+}
+
+@keyframes guard-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(203, 184, 150, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 0 8px rgba(203, 184, 150, 0);
+  }
+}
+
+.anim-faint {
+  animation: faint-fall 0.7s ease forwards;
+}
+
+@keyframes faint-fall {
+  0% {
+    transform: rotate(0deg) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(85deg) translateY(10px);
+    opacity: 0.55;
+  }
+}
+
+.anim-tame-success {
+  animation: tame-success 0.7s ease;
+}
+
+@keyframes tame-success {
+  0% {
+    box-shadow: 0 0 0 0 rgba(224, 169, 74, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 24px 10px rgba(224, 169, 74, 0);
+  }
+}
+
+.anim-tame-fail {
+  animation: shake 0.7s ease;
+}
+
+.floating-number {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 800;
+  font-size: 1rem;
+  pointer-events: none;
+  animation: float-up 1s ease forwards;
+  text-shadow: 0 2px 0 var(--outline-color);
+  z-index: 10;
+}
+
+.floating-number-normal,
+.floating-number-weak {
+  color: #f1e6d2;
+}
+
+.floating-number-strong {
+  color: #ff9142;
+  font-size: 1.15rem;
+}
+
+.floating-number-crit {
+  color: #ff5c33;
+  font-size: 1.4rem;
+}
+
+.floating-number-heal {
+  color: #6fce5a;
+}
+
+.floating-number-shield {
+  color: #6fd6d6;
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 6px) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -6px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -36px) scale(1);
+  }
+}
+
+/* -----------------------------------------------------------------------
+ * Reserve picker (swap / recall modal content)
+ * --------------------------------------------------------------------- */
+
+.reserve-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 260px;
+}
+
+.reserve-picker-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--color-stone);
+  border: 2px solid var(--outline-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.reserve-picker-row:hover {
+  background: var(--color-stone-light);
+}
+
+.reserve-picker-thumb svg {
+  display: block;
+}
+
+.reserve-picker-name {
+  font-weight: 700;
+}
+
+.reserve-picker-meta {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.battle-end-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.battle-end-tame {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+/* -----------------------------------------------------------------------
+ * Dev art-review gallery (#gallery route)
+ * --------------------------------------------------------------------- */
+
+.gallery {
+  padding: var(--space-5);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.gallery-hint {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-5);
+}
+
+.gallery-row {
+  margin-bottom: var(--space-6);
+}
+
+.gallery-meta {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.gallery-cell {
+  background: var(--color-stone);
+  border: 2px solid var(--outline-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-1);
+  text-align: center;
+}
+
+.gallery-thumb svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.gallery-caption {
+  font-size: 0.6rem;
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+}
