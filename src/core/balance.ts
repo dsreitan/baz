@@ -10,7 +10,7 @@
  * to match the data-table convention in src/data (moves/traits/affixes);
  * fractions (0..1) are used for chances and HP-relative amounts.
  */
-import type { Aspect, Role, Stage, WorldTier } from './types';
+import type { Aspect, Rarity, Role, Stage, WorldTier } from './types';
 
 // ---------------------------------------------------------------------------
 // Damage formula
@@ -198,3 +198,57 @@ export const ROLE_BOND_EFFECTS: Record<Role, RoleBondEffect> = {
 
 /** All 8 aspects, re-exported here for tuning tables that key by aspect. */
 export type AspectTuningTable = Record<Aspect, number>;
+
+// ---------------------------------------------------------------------------
+// Loot economy (Phase 4 gen/loot.ts) — additive Phase 4 extension.
+// ---------------------------------------------------------------------------
+
+/**
+ * `AffixDef.min/max` (and `chanceMin/chanceMax`) are the roll range at the
+ * ilvl-1 reference point (affixes.ts header comment); this is the missing
+ * "how much stronger per item level" knob the Phase 4 brief asked for:
+ * `value = roll(min..max) × (1 + AFFIX_ILVL_SCALING × (ilvl - 1))`.
+ */
+export const AFFIX_ILVL_SCALING = 0.03;
+
+/** Essence yielded by salvaging gear, keyed by rarity, before AFFIX_ILVL_SCALING. */
+export const SALVAGE_ESSENCE_BASE: Record<Rarity, number> = {
+  common: 5,
+  uncommon: 10,
+  rare: 20,
+  epic: 40,
+  legendary: 80,
+};
+
+/** Essence yielded by releasing a tamed dino, per dino level (DESIGN §5 "Essence"). */
+export const RELEASE_ESSENCE_PER_LEVEL = 3;
+
+/**
+ * Essence cost to upgrade an item one rarity step, keyed by its CURRENT
+ * rarity, before ilvl scaling. Legendary is already the max step (DESIGN §5
+ * "Rarities: ... Legendary"; `upgradeItem` no-ops on it) — its entry exists
+ * only so the table stays total and every rarity maps to a positive cost.
+ */
+export const UPGRADE_ESSENCE_COST: Record<Rarity, number> = {
+  common: 20,
+  uncommon: 40,
+  rare: 80,
+  epic: 160,
+  legendary: 160,
+};
+
+// ---------------------------------------------------------------------------
+// Reward loot (Phase 4 gen/loot.ts, DESIGN §5/§7 reward tables)
+// ---------------------------------------------------------------------------
+
+export const BATTLE_LOOT_CHANCE = 0.4;
+export const CACHE_SECOND_ITEM_CHANCE = 0.5;
+export const CACHE_LOOT_RARITY_BOOST = 1;
+export const ALPHA_LOOT_MIN_RARITY: Rarity = 'rare';
+export const APEX_LOOT_MIN_RARITY: Rarity = 'epic';
+export const APEX_LOOT_ITEM_COUNT = 2;
+
+export const BATTLE_ESSENCE_RANGE: [number, number] = [3, 8];
+export const ALPHA_ESSENCE_RANGE: [number, number] = [10, 20];
+export const CACHE_ESSENCE_RANGE: [number, number] = [8, 15];
+export const APEX_ESSENCE_RANGE: [number, number] = [30, 50];
