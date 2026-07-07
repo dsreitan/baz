@@ -47,6 +47,7 @@ import { dinoSvg } from '../../render/dinoSvg';
 import { battleLog, eventToText, type NameResolver } from '../components/battleLog';
 import { commandBar as buildCommandBar } from '../components/commandBar';
 import { dinoCard, type DinoCardHandle } from '../components/dinoCard';
+import { dateOrUrlSeed } from '../devSeed';
 import { el, modal, tooltip, type ModalHandle } from '../dom';
 import type { Screen, GameContext } from '../screenManager';
 import { svgIcon } from '../svgIcon';
@@ -101,7 +102,7 @@ function livingOn(battle: BattleState, side: Combatant['side']): Combatant[] {
 
 export function battleScreen(props: BattleScreenProps): Screen {
   const battle = props.battle;
-  const rng = createRng(Date.now() >>> 0);
+  const rng = createRng(dateOrUrlSeed());
   const logHandle = battleLog();
   const summaryLines: string[] = [];
   const timeouts = new Set<ReturnType<typeof setTimeout>>();

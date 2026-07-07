@@ -25,6 +25,20 @@ export const CRIT_MULTIPLIER = 1.5;
 export const BASE_CRIT_CHANCE = 0.05;
 
 /**
+ * Phase 7 balance pass: a flat multiplier on every damage roll's final
+ * amount (`engine.ts` `computeDamage`), applied after every other term
+ * (power, ATK/DEF ratio, aspect/bond/combo/crit multipliers, variance).
+ * Playtesting found strong-aspect hits one-shotting full-HP dinos at level
+ * parity (e.g. a 65-power move at atk≈def landing ~125 on a 116-HP target)
+ * — battles were resolving in 1-3 rounds instead of the DESIGN §9 target of
+ * multi-round HP attrition. This single knob is the sim-driven fix (see
+ * `balance-report.test.ts`); it does not change the formula's *shape*, only
+ * its overall scale, so relative matchup swinginess (crits, aspect
+ * advantage, combos) is preserved.
+ */
+export const GLOBAL_DAMAGE_SCALE = 0.4;
+
+/**
  * A `combo.ignoreDef` hit doesn't set DEF to zero (that would make damage
  * unbounded for very low-ATK attackers); instead the defender's effective
  * DEF is scaled down to this fraction of its normal value. Tuning decision:
@@ -68,6 +82,16 @@ export const ENEMY_LEVEL_OFFSET_BY_TIER: Record<WorldTier, number> = {
   4: 10,
 };
 
+/**
+ * Onboarding fix (Phase 7): a lone-dino active pack (i.e. before the player
+ * has tamed 2 more) fights wilds `-1` level below the usual pack-avg+tier
+ * formula, on top of the encounter also being scaled down to 1v1 (see
+ * `gen/dino.ts` `generateEncounter`'s `packSize` param). Makes the very
+ * first expedition (one level-3 starter) winnable and gives new players a
+ * visibly tameable-level target on the first battle node.
+ */
+export const SMALL_PACK_LEVEL_OFFSET = -1;
+
 /** Extra flat stat multiplier per tier, on top of level-driven growth (Diablo-style toughness knob). */
 export const ENEMY_STAT_MULTIPLIER_BY_TIER: Record<WorldTier, number> = {
   1: 1.0,
@@ -79,7 +103,19 @@ export const ENEMY_STAT_MULTIPLIER_BY_TIER: Record<WorldTier, number> = {
 /** Wild Alpha nodes: stat multiplier on top of the tier multiplier. */
 export const ALPHA_STAT_MULTIPLIER = 1.2;
 /** Apex bosses: stat multiplier on top of the tier multiplier. */
-export const APEX_STAT_MULTIPLIER = 1.5;
+export const APEX_STAT_MULTIPLIER = 1.4;
+
+/**
+ * Phase 7 balance pass: plain 'battle' node wilds (not Alpha, not Apex) get
+ * this stat discount on top of the tier multiplier. A "fair fight" (equal
+ * stats both sides) in this engine's 3v3 attrition formula lands close to a
+ * 50/50 AI-vs-AI coin flip (see `balance-report.test.ts`'s notes) — but
+ * DESIGN §9 wants ordinary encounters to be consistently winnable (~85-90%)
+ * so Alpha/Apex nodes read as the escalation. This is the lever for that:
+ * it only discounts plain 'battle' wilds, so Alpha (`ALPHA_STAT_MULTIPLIER`)
+ * and Apex (`APEX_STAT_MULTIPLIER`) difficulty are untouched.
+ */
+export const NORMAL_BATTLE_STAT_MULTIPLIER = 0.82;
 
 // ---------------------------------------------------------------------------
 // Taming (DESIGN §4.5)

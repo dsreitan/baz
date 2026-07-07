@@ -75,6 +75,7 @@ function buildDemoBattle(): { playerDinos: DinoInstance[]; reserve: DinoInstance
     biome: BIOME_LIST[0]!.id,
     tier: 1,
     packAvgLevel: DEMO_STARTER_LEVEL,
+    packSize: playerDinos.length,
     kind: 'battle',
     rng,
   });

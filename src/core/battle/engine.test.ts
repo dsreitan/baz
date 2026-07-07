@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createRng } from '../rng';
-import { CRIT_MULTIPLIER, DAMAGE_VARIANCE_MAX, DAMAGE_VARIANCE_MIN, IGNORE_DEF_FACTOR } from '../balance';
+import { CRIT_MULTIPLIER, DAMAGE_VARIANCE_MAX, DAMAGE_VARIANCE_MIN, GLOBAL_DAMAGE_SCALE, IGNORE_DEF_FACTOR } from '../balance';
 import { aspectMultiplier } from '../typeChart';
 import { applyAction, createBattle, isBattleOver, legalActions, type CreateBattleConfig } from './engine';
 import type { BattleAction, BattleEvent, ItemInstance } from '../types';
@@ -35,7 +35,8 @@ function expectedDamage(opts: {
     (1 + (opts.traitAffixAspectPercent ?? 0) / 100) *
     (opts.legendaryMult ?? 1) *
     (1 + (opts.damageTakenPercent ?? 0) / 100) *
-    opts.variance;
+    opts.variance *
+    GLOBAL_DAMAGE_SCALE;
   if (opts.crit) amount *= CRIT_MULTIPLIER;
   return Math.max(1, Math.round(amount));
 }

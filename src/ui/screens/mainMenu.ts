@@ -20,6 +20,7 @@ import { generateStarter } from '../../core/gen/dino';
 import { camp } from './camp';
 import { dinoCard } from '../components/dinoCard';
 import { dinoToCombatant } from '../dinoPreview';
+import { dateOrUrlSeed } from '../devSeed';
 import { el, modal, toast, type ModalHandle } from '../dom';
 import type { GameContext, Screen } from '../screenManager';
 
@@ -244,7 +245,7 @@ export function mainMenu(): Screen {
           label: UI.newGame,
           primary: true,
           onClick: () => {
-            const state = createNewGame({ name, starterSpecies: chosen, seed: Date.now() >>> 0 });
+            const state = createNewGame({ name, starterSpecies: chosen, seed: dateOrUrlSeed() });
             Object.assign(ctx.state, state);
             ctx.activeSlot.value = slot;
             ctx.save();

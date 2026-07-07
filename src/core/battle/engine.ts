@@ -46,6 +46,7 @@ import {
   CRIT_MULTIPLIER,
   DAMAGE_VARIANCE_MAX,
   DAMAGE_VARIANCE_MIN,
+  GLOBAL_DAMAGE_SCALE,
   GUARD_DEFENSE_BONUS_PERCENT,
   GUARD_TURNS,
   IGNORE_DEF_FACTOR,
@@ -676,7 +677,8 @@ function computeDamage(
     (1 + traitAffixAspectPercent / 100) *
     legendaryMult *
     (1 + damageTakenPercent / 100) *
-    variance;
+    variance *
+    GLOBAL_DAMAGE_SCALE;
   if (crit) amount *= CRIT_MULTIPLIER;
 
   return { amount: Math.max(1, Math.round(amount)), crit, effective };

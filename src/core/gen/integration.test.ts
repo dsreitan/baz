@@ -19,6 +19,7 @@ describe('gen -> engine -> sim integration', () => {
         biome: 'cinder_peaks',
         tier: 1,
         packAvgLevel: 6,
+        packSize: 2,
         kind: 'battle',
         rng: createRng(seed),
       });
@@ -42,6 +43,7 @@ describe('gen -> engine -> sim integration', () => {
       biome: 'frostfen',
       tier: 2,
       packAvgLevel: 10,
+      packSize: 2,
       kind: 'alpha',
       rng: createRng(77),
     });
@@ -65,6 +67,7 @@ describe('gen -> engine -> sim integration', () => {
       biome: exp.biome,
       tier: exp.tier,
       packAvgLevel: 15,
+      packSize: 3,
       kind: 'apex',
       rng: createRng(exp.seed).fork(`node-${apex.id}`),
     });

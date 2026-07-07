@@ -9,7 +9,14 @@
  * `DinoInstance` shape owned dinos use.
  */
 import { BIOMES, SPECIES, ALPHA_MODS } from '../../data/index';
-import { ALPHA_STAT_MULTIPLIER, APEX_STAT_MULTIPLIER, DINO_MAX_LEVEL, ENEMY_LEVEL_OFFSET_BY_TIER } from '../balance';
+import {
+  ALPHA_STAT_MULTIPLIER,
+  APEX_STAT_MULTIPLIER,
+  DINO_MAX_LEVEL,
+  ENEMY_LEVEL_OFFSET_BY_TIER,
+  NORMAL_BATTLE_STAT_MULTIPLIER,
+  SMALL_PACK_LEVEL_OFFSET,
+} from '../balance';
 import { deriveEnemyStats, stageForLevel } from '../stats';
 import { apexMods, rollAlphaMods } from './alpha';
 import type {
@@ -122,6 +129,7 @@ export function generateWildCombatant(opts: GenerateWildCombatantOpts): Combatan
   let stats = deriveEnemyStats(species, level, opts.tier);
   if (opts.apex) stats = scaleStats(stats, APEX_STAT_MULTIPLIER);
   else if (opts.alpha) stats = scaleStats(stats, ALPHA_STAT_MULTIPLIER);
+  else stats = scaleStats(stats, NORMAL_BATTLE_STAT_MULTIPLIER);
 
   const moves = movesAtLevel(species, level);
   const trait = opts.rng.pick(species.traitPool);
@@ -157,6 +165,17 @@ export interface GenerateEncounterOpts {
   tier: WorldTier;
   /** Average level of the player's active pack; the encounter's target level offsets from this. */
   packAvgLevel: number;
+  /**
+   * Size of the player's living active pack (1-3). Normal 'battle' encounters
+   * scale 1:1 with this (1v1/2v2/3v3, Phase 7 onboarding fix — a fresh
+   * one-dino pack no longer faces 3 wilds). 'alpha' encounters are the alpha
+   * plus `packSize - 1` normal escorts (minimum: just the alpha, at
+   * packSize 1). 'apex' composition is unaffected (boss, +1 escort at
+   * tier >= 3) — a small pack just finds the apex harder, per design.
+   * A packSize of 1 also shaves `SMALL_PACK_LEVEL_OFFSET` off the target
+   * level so the player's very first fights are winnable.
+   */
+  packSize: number;
   kind: 'battle' | 'alpha' | 'apex';
   rng: Rng;
 }
@@ -166,14 +185,17 @@ function hasSummonAdd(combatant: Combatant): boolean {
 }
 
 /**
- * Build the full enemy group for a node: 3 wilds (battle), 1 alpha + 2 wilds
- * (alpha), or the boss (+1 escort at tier >= 3) for apex. Any combatant that
- * ends up carrying the `summonAdd` alpha mod (Pack Leader, rolled here or
- * fixed into an Apex's mod set) adds one extra normal wild ally, per
- * engine.ts's note that `summonAdd` is realized at generation time.
+ * Build the full enemy group for a node: `packSize` wilds (battle, 1v1/2v2/3v3
+ * — Phase 7 onboarding fix), 1 alpha + `packSize - 1` normal wilds (alpha),
+ * or the boss (+1 escort at tier >= 3) for apex, unaffected by packSize. Any
+ * combatant that ends up carrying the `summonAdd` alpha mod (Pack Leader,
+ * rolled here or fixed into an Apex's mod set) adds one extra normal wild
+ * ally, per engine.ts's note that `summonAdd` is realized at generation time.
  */
 export function generateEncounter(opts: GenerateEncounterOpts): Combatant[] {
-  const targetLevel = Math.round(opts.packAvgLevel) + ENEMY_LEVEL_OFFSET_BY_TIER[opts.tier];
+  const packSize = Math.max(1, Math.min(3, Math.round(opts.packSize)));
+  const levelOffset = ENEMY_LEVEL_OFFSET_BY_TIER[opts.tier] + (packSize === 1 ? SMALL_PACK_LEVEL_OFFSET : 0);
+  const targetLevel = Math.round(opts.packAvgLevel) + levelOffset;
   const spawnNormal = (): Combatant =>
     generateWildCombatant({ biome: opts.biome, tier: opts.tier, targetLevel, rng: opts.rng });
 
@@ -187,9 +209,10 @@ export function generateEncounter(opts: GenerateEncounterOpts): Combatant[] {
   } else if (opts.kind === 'alpha') {
     const alpha = generateWildCombatant({ biome: opts.biome, tier: opts.tier, targetLevel, rng: opts.rng, alpha: true });
     alpha.alphaMods = rollAlphaMods(opts.tier, opts.rng);
-    enemies.push(alpha, spawnNormal(), spawnNormal());
+    enemies.push(alpha);
+    for (let i = 1; i < packSize; i++) enemies.push(spawnNormal());
   } else {
-    enemies.push(spawnNormal(), spawnNormal(), spawnNormal());
+    for (let i = 0; i < packSize; i++) enemies.push(spawnNormal());
   }
 
   if (enemies.some(hasSummonAdd)) enemies.push(spawnNormal());

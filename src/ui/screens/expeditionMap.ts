@@ -306,7 +306,14 @@ export function expeditionMap(): Screen {
     const activeDinos = getActiveDinos(ctx.state);
     const reserveDinos = getReserveDinos(ctx.state);
     const rng = createRng(exp.seed).fork(`node-${node.id}`);
-    const enemies = generateEncounter({ biome: exp.biome, tier: exp.tier, packAvgLevel: avgLevel(activeDinos), kind, rng });
+    const enemies = generateEncounter({
+      biome: exp.biome,
+      tier: exp.tier,
+      packAvgLevel: avgLevel(activeDinos),
+      packSize: activeDinos.length,
+      kind,
+      rng,
+    });
     const commands = unlockedCommands(ctx.state.packmaster.skills);
     const battle = createBattle(
       {

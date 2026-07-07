@@ -93,23 +93,38 @@ describe('generateWildCombatant', () => {
 });
 
 describe('generateEncounter', () => {
-  it('battle: 3 wilds, all tameable, no alpha mods', () => {
-    const enemies = generateEncounter({ biome: 'cinder_peaks', tier: 1, packAvgLevel: 5, kind: 'battle', rng: createRng(1) });
-    expect(enemies).toHaveLength(3);
-    for (const e of enemies) {
-      expect(e.tameable).toBe(true);
-      expect(e.alphaMods).toEqual([]);
+  it('battle: scales 1:1 with packSize (1v1/2v2/3v3), all tameable, no alpha mods', () => {
+    for (const packSize of [1, 2, 3]) {
+      const enemies = generateEncounter({ biome: 'cinder_peaks', tier: 1, packAvgLevel: 5, packSize, kind: 'battle', rng: createRng(1) });
+      expect(enemies).toHaveLength(packSize);
+      for (const e of enemies) {
+        expect(e.tameable).toBe(true);
+        expect(e.alphaMods).toEqual([]);
+      }
     }
   });
 
-  it('alpha: 1 alpha (with mods) + 2 normal wilds, unless summonAdd bumps it to 4', () => {
-    for (const seed of SEEDS) {
-      const enemies = generateEncounter({ biome: 'sunken_coast', tier: 3, packAvgLevel: 10, kind: 'alpha', rng: createRng(seed) });
-      const alphas = enemies.filter((e) => e.alphaMods.length > 0);
-      expect(alphas).toHaveLength(1);
-      expect(alphas[0]!.tameable).toBe(true);
-      const hasSummonAdd = alphas[0]!.alphaMods.includes('pack_leader');
-      expect(enemies.length).toBe(hasSummonAdd ? 4 : 3);
+  it('battle: a packSize-1 encounter targets exactly SMALL_PACK_LEVEL_OFFSET below a packSize-3 one for the same seed', () => {
+    // Both start from a fresh rng(seed) and the first rng draw in each case is the
+    // same jitter roll (generateWildCombatant's first op), so the level gap between
+    // packSize 1 and packSize 3 is exactly SMALL_PACK_LEVEL_OFFSET, deterministically.
+    for (let seed = 0; seed < 100; seed++) {
+      const solo = generateEncounter({ biome: 'cinder_peaks', tier: 1, packAvgLevel: 10, packSize: 1, kind: 'battle', rng: createRng(seed) });
+      const trio = generateEncounter({ biome: 'cinder_peaks', tier: 1, packAvgLevel: 10, packSize: 3, kind: 'battle', rng: createRng(seed) });
+      expect(solo[0]!.level).toBe(trio[0]!.level - 1);
+    }
+  });
+
+  it('alpha: 1 alpha (with mods) + (packSize - 1) normal wilds, unless summonAdd bumps it by 1', () => {
+    for (const packSize of [1, 2, 3]) {
+      for (const seed of SEEDS) {
+        const enemies = generateEncounter({ biome: 'sunken_coast', tier: 3, packAvgLevel: 10, packSize, kind: 'alpha', rng: createRng(seed) });
+        const alphas = enemies.filter((e) => e.alphaMods.length > 0);
+        expect(alphas).toHaveLength(1);
+        expect(alphas[0]!.tameable).toBe(true);
+        const hasSummonAdd = alphas[0]!.alphaMods.includes('pack_leader');
+        expect(enemies.length).toBe(hasSummonAdd ? packSize + 1 : packSize);
+      }
     }
   });
 
@@ -117,7 +132,7 @@ describe('generateEncounter', () => {
     let sawFour = false;
     let sawThree = false;
     for (let seed = 0; seed < 400; seed++) {
-      const enemies = generateEncounter({ biome: 'sunken_coast', tier: 4, packAvgLevel: 10, kind: 'alpha', rng: createRng(seed) });
+      const enemies = generateEncounter({ biome: 'sunken_coast', tier: 4, packAvgLevel: 10, packSize: 3, kind: 'alpha', rng: createRng(seed) });
       if (enemies.length === 4) sawFour = true;
       if (enemies.length === 3) sawThree = true;
       if (sawFour && sawThree) break;
@@ -126,16 +141,18 @@ describe('generateEncounter', () => {
     expect(sawThree).toBe(true);
   });
 
-  it('apex: the boss + fixed apex mods, with an escort only at tier >= 3', () => {
-    const t1 = generateEncounter({ biome: 'cinder_peaks', tier: 1, packAvgLevel: 20, kind: 'apex', rng: createRng(1) });
-    expect(t1).toHaveLength(1);
-    expect(t1[0]!.species).toBe('pyrelord_rex');
-    expect(t1[0]!.alphaMods.length).toBeGreaterThan(0);
-    expect(t1[0]!.tameable).toBe(false);
+  it('apex: the boss + fixed apex mods, with an escort only at tier >= 3, regardless of packSize', () => {
+    for (const packSize of [1, 3]) {
+      const t1 = generateEncounter({ biome: 'cinder_peaks', tier: 1, packAvgLevel: 20, packSize, kind: 'apex', rng: createRng(1) });
+      expect(t1).toHaveLength(1);
+      expect(t1[0]!.species).toBe('pyrelord_rex');
+      expect(t1[0]!.alphaMods.length).toBeGreaterThan(0);
+      expect(t1[0]!.tameable).toBe(false);
 
-    const t3 = generateEncounter({ biome: 'cinder_peaks', tier: 3, packAvgLevel: 20, kind: 'apex', rng: createRng(1) });
-    expect(t3.length).toBeGreaterThanOrEqual(2);
-    expect(t3[0]!.species).toBe('pyrelord_rex');
+      const t3 = generateEncounter({ biome: 'cinder_peaks', tier: 3, packAvgLevel: 20, packSize, kind: 'apex', rng: createRng(1) });
+      expect(t3.length).toBeGreaterThanOrEqual(2);
+      expect(t3[0]!.species).toBe('pyrelord_rex');
+    }
   });
 });
 
